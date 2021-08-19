@@ -2,7 +2,7 @@ import re
 from unidecode import unidecode
 
 
-def df_to_html_file(homepageid, fullname, df, prof_names, file_path):
+def df_to_html_file(homepageid: str, fullname, df, prof_names, file_path):
     stringhtml = make_html_string(homepageid, fullname, df, prof_names)    
     html_string_to_file(file_path, stringhtml)
 
@@ -12,14 +12,14 @@ def html_string_to_file(file_path, html_string):
         file.write(html_string)
 
 
-def make_html_string(homepageid, fullname, df, prof_names):
+def make_html_string(homepageid: str, fullname, df, prof_names):
     stringhtml = output_html_string_top(homepageid, fullname)
     stringhtml += entrys_by_years_to_html(df, prof_names)
     stringhtml += '</body></html>'
     return stringhtml
 
 
-def output_html_string_top(homepageid, fullname):
+def output_html_string_top(homepageid: str, fullname):
     output_html_string_top = '<html><head>\n'
     output_html_string_top += '<meta http-equiv="content-type" content="text/html;charset=utf-8" />\n'
     output_html_string_top += '<link href="http://qdev.nbi.ku.dk/css/style.css" rel="stylesheet" type="text/css" media="screen, print" />\n'
@@ -35,7 +35,7 @@ def output_html_string_top(homepageid, fullname):
     output_html_string_top += '});\n'
     output_html_string_top += '</script>\n'
     # If NOT all profs, write his name with a link to his page
-    if homepageid != '':
+    if homepageid.isdigit():
         output_html_string_top += f'<h2>Publications by <a href="http://www.nbi.ku.dk/english/staff/?id={homepageid}&vis=medarbejder">{fullname}</a></h2>'
     # If it IS all profs, write name (with no link), which is all QDev staff
     else:
@@ -118,10 +118,10 @@ def output_html_string_entry(entry, prof_names):
 def author_links_to_html(authors, prof_names):
     output_html_string = ''
     for i, author in enumerate(authors):
-        linkaddr = '<a href="http://arxiv.org/find/cond-mat/1/au:+' + re.sub('[^A-Za-z0-9-_]+', '', re.sub('-', '_', unidecode(author.name[author.name.rfind(' ')+1:]))) + '_' + unidecode(author.name[0]) + '/0/1/0/all/0/1" target="_blank">' + author.name + '</a>'
-        for prof_name in author.name.lower().split():
+        linkaddr = '<a href="http://arxiv.org/find/cond-mat/1/au:+' + re.sub('[^A-Za-z0-9-_]+', '', re.sub('-', '_', unidecode(author[author.rfind(' ')+1:]))) + '_' + unidecode(author[0]) + '/0/1/0/all/0/1" target="_blank">' + author + '</a>'
+        for prof_name in author.lower().split():
             if prof_name in prof_names:
-                linkaddr = '<a href="http://qdev.nbi.ku.dk/publications/' + prof_name + '">' + author.name + '</a>'
+                linkaddr = '<a href="http://qdev.nbi.ku.dk/publications/' + prof_name + '">' + author + '</a>'
         if i != 0:
             output_html_string += ', '
         output_html_string += linkaddr

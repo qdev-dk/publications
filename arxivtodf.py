@@ -50,6 +50,7 @@ def get_title_from_crossref(doi: str):
 def entry_list(entry):
     idtuple = get_id_and_version(entry)
     year = get_year(entry)
+    author_list = [author['name'] for author in entry.authors ]
     ref_link = get_link(entry, 'doi')
     pdf_link = get_pdf_link(entry)
     arxiv_abstract = get_arxiv_abstract(entry)
@@ -60,7 +61,7 @@ def entry_list(entry):
                  has_key_else_none(entry, 'arxiv_doi'),
                  entry.title,
                  entry.summary,
-                 entry.authors,
+                 author_list,
                  ref_link,
                  pdf_link,
                  arxiv_abstract]
