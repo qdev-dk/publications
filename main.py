@@ -1,20 +1,31 @@
 import arxivtodf
 import dftohtml
+import pandas as pd
 
+names_df  = pd.read_excel('names.xlsx',dtype={'names':str, 'fullnames':str, 'search_queries':str, 'homepageids':str})
 
-search_queries = ['rn:NBI+AND+rn:QDEV', 'au:+kjaergaard_m', 'au:Nygaard_J+OR+au:Nygard_J','au:Marcus_C_M','au:+flensberg_k','au:+kuemmeth_f','au:+paaske_j','au:+rudner_m','au:+jespersen_T', 'au:+krogstrup_P', 'au:+chatterjee_a']
-names = ['output', 'kjaergaard', 'nygard','marcus','flensberg','kuemmeth','paaske','rudner','jespersen', 'krogstrup', 'chatterjee']
-fullnames = ['All QDev staff', 'Morten Kjaergaard',u'Jesper Nyg\xe5rd', 'Charles M. Marcus', 'Karsten Flensberg', 'Ferdinand Kuemmeth', 'Jens Paaske', 'Mark Spencer Rudner', 'Thomas Sand Jespersen', 'Peter Krogstrup', 'Anasua Chatterjee']
-homepageids = ['', '181096', '67039', '379494', '185400', '440362', '126929', '440016', '136147', '276614','109873']
+search_queries = names_df['search_queries'].to_list()
+names = names_df['names'].to_list()
+fullnames =names_df['fullnames'].to_list()
+homepageids = names_df['homepageids'].to_list()
+
 
 basehref = '/var/publications/data/'
 basehref2 = '/var/publications/web/'
+static = 'X:\Publication list'
+column_list = ['arxiv_id', 'idnr', 'Ver', 'updated', 'Year', 'journal_ref', 'DOI', 'title', 'summary', 'authors', 'ref_link', 'pdf_link', 'arxiv_abstract']
 
 for n in range(len(names)):
     try:
-        df = arxivtodf.df_from_query(search_queries[n], start=0, max_results=500)
-        df.to_csv(basehref+names[n]+'.csv')
-        dftohtml.df_to_html_file(homepageids[n], fullnames[n], df, names, basehref2+names[n]+'.html')
+        df_query = arxivtodf.df_from_query(search_queries[n], start=0, max_results=500)
+
+        df_query.to_excel(basehref+names[n]+'.xlsx')
+        df_static =  pd.read_excel(static+'static_'+names[n]+'.xlsx',index_col=0,dtype=str)
+        merged = pd.merge(df_static[['idnr','DOI']], df_query[['idnr','DOI']], on=['idnr','DOI'], how='right', indicator=True)
+        bool_df = merged._merge=='right_only'
+        df_final = pd.concat([df_static,df_query[bool_df.to_list()]])
+
+        dftohtml.df_to_html_file(str(homepageids[n]), fullnames[n], df_query, names, basehref2+names[n]+'.html')
     except Exception as e:
         print(e)
         pass
