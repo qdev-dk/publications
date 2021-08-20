@@ -2,7 +2,8 @@ import arxivtodf
 import dftohtml
 import pandas as pd
 
-names_df  = pd.read_excel('names.xlsx',dtype={'names':str, 'fullnames':str, 'search_queries':str, 'homepageids':str})
+name_file_path = '/var/projects/qdev/names.xlsx'
+names_df  = pd.read_excel(name_file_path, dtype={'names':str, 'fullnames':str, 'search_queries':str, 'homepageids':str})
 
 search_queries = names_df['search_queries'].to_list()
 names = names_df['names'].to_list()
@@ -12,8 +13,8 @@ homepageids = names_df['homepageids'].to_list()
 
 basehref = '/var/publications/data/'
 basehref2 = '/var/publications/web/'
-static = 'X:\Publication list'
-column_list = ['arxiv_id', 'idnr', 'Ver', 'updated', 'Year', 'journal_ref', 'DOI', 'title', 'summary', 'authors', 'ref_link', 'pdf_link', 'arxiv_abstract']
+static = '/var/projects/qdev/pub_static/'
+
 
 for n in range(len(names)):
     try:
