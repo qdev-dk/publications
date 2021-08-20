@@ -11,8 +11,8 @@ fullnames =names_df['fullnames'].to_list()
 homepageids = names_df['homepageids'].to_list()
 
 
-basehref = '/var/publications/data/'
-basehref2 = '/var/publications/web/'
+basehref = '/var/projects/publications/data/'
+basehref2 = '/var/projects/publications/web/'
 static = '/var/projects/qdev/pub_static/'
 
 
