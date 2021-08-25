@@ -117,7 +117,7 @@ def get_pdf_link(entry):
     except:
         try:
             pdf_link = get_link(entry, 'pdf')
-            tryopen = libreq.urlopen(pdf_link)
+            #tryopen = libreq.urlopen(pdf_link)
             return pdf_link
         except:
             return None
