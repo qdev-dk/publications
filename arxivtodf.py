@@ -14,7 +14,7 @@ def df_from_query(query: str, start: int = 0, max_results: int = 5):
 
 def get_arxiv_feed_entries_list(query: str, start: int = 0, max_results: int = 5):
     base_url = 'http://export.arxiv.org/api/query?'
-    query_url = f'search_query={query}&start={start}&max_results={max_results}'
+    query_url = f'search_query={query}&sortBy=lastUpdatedDate&sortOrder=descending&start={start}&max_results={max_results}'
 
     with libreq.urlopen(base_url+query_url) as url:
         response = url.read()
@@ -32,9 +32,11 @@ def df_from_arxiv_feed(entrys):
 
 def update_tile(doi: str, arxiv_id: str, title: str):
     if doi is not None and arxiv_id is not None:
-        return get_title_from_crossref(doi)
-    else:
-        return title
+        title_crossref = get_title_from_crossref(doi)
+        if title_crossref:
+            title = title_crossref
+    
+    return title
 
 
 def get_title_from_crossref(doi: str):
@@ -44,7 +46,7 @@ def get_title_from_crossref(doi: str):
     root = ET.fromstring(response)
     for title in root.iter('title'):
         title_str = title.text
-    return title_str
+        return title_str
 
 
 def entry_list(entry):
